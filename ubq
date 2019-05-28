@@ -5,13 +5,15 @@ iptables -t nat -A REDSOCKS -d 127.0.0.0/8 -j RETURN
 iptables -t nat -A REDSOCKS -d 169.254.0.0/16 -j RETURN
 iptables -t nat -A REDSOCKS -d 172.16.0.0/24 -j RETURN
 iptables -t nat -A REDSOCKS -d 192.168.0.0/24 -j RETURN
+iptables -t nat -A REDSOCKS -p udp --dport 53 -j RETURN
 iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
 iptables -t nat -A REDSOCKS -p udp -j REDIRECT --to-ports 10053
 iptables -t nat -A OUTPUT -p tcp --dport 443 -j REDSOCKS
 iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDSOCKS
-iptables -t nat -A OUTPUT -p udp --dport 10053 -j REDSOCKS
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDSOCKS
 iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDSOCKS
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDSOCKS
+iptables -t nat -A PREROUTING -p udp --dport 53 -j REDSOCKS
 
 
 
@@ -34,8 +36,8 @@ redsocks {
     ip = ;
     port = ;
     type = socks5;
-    login = ;
-    password = ;
+    login = "";
+    password = "";
     disclose_src = false;
 }
  
@@ -43,14 +45,14 @@ redudp {
     // `local_ip' should not be 0.0.0.0 as it's also used for outgoing
     // packets that are sent as replies - and it should be fixed
     // if we want NAT to work properly.
-    local_ip = 127.0.0.1;
+    local_ip = 192.168.;
     local_port = 10053;
  
     // `ip' and `port' of socks5 proxy server.
-    ip = ;
+        ip = ;
         port = ;
-        login = ;
-        password = ;
+        login = "";
+        password = "";
  
     // redsocks knows about two options while redirecting UDP packets at
     // linux: TPROXY and REDIRECT.  TPROXY requires more complex routing
@@ -60,8 +62,7 @@ redudp {
     // `dest_port` to be set, limiting packet redirection to single
     // destination.
     // [1] http://wiki.squid-cache.org/Features/Tproxy4
-    dest_ip = 8.8.8.8;
-    dest_port = 53;
+    dest_ip = 77.88.8.8;
  
     udp_timeout = 30;
     udp_timeout_stream = 180;
