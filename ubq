@@ -15,6 +15,9 @@ iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDSOCKS
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDSOCKS
 iptables -t nat -A PREROUTING -p udp --dport 53 -j REDSOCKS
 
+iptables -A OUTPUT -s 192.168. -d 0.0.0.0 -p tcp -m tcp -j DROP
+iptables -t nat -A OUTPUT -s 192.168 -d 0.0.0.0 -p tcp -m tcp -j REDSOCKS
+
 
 
 base {
